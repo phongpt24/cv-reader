@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Việc làm hấp dẫn</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <h1>Các Vị Trí Đang Tuyển Dụng</h1>
+            <p>Tìm cơ hội phù hợp và ứng tuyển ngay hôm nay!</p>
+        </header>
+        <div id="jobListings" class="job-listings-container">
+            </div>
+    </div>
+
+    <div id="applyModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalJobTitle">Ứng tuyển vị trí</h2>
+            <form id="applyForm">
+                <div class="input-group">
+                    <label for="cvFileInputModal">Tải lên CV của bạn (PDF, DOCX, TXT)</label>
+                    <input type="file" id="cvFileInputModal" accept=".pdf,.docx,.txt" required>
+                </div>
+                <button type="submit" class="button button-primary">Nộp CV</button>
+                <div id="modalStatus" class="message hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='jobs.js') }}"></script>
+</body>
+</html>

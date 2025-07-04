@@ -1,0 +1,450 @@
+/* === THEME & VARIABLES === */
+:root {
+    --primary-color: #34495e; /* Dark Slate Blue */
+    --secondary-color: #1abc9c; /* Teal */
+    --background-color: #f8f9fa;
+    --card-background-color: #ffffff;
+    --text-color: #2c3e50;
+    --text-color-light: #7f8c8d;
+    --border-color: #e5e7eb;
+    --success-color: #27ae60;
+    --error-color: #c0392b;
+    --font-family: 'Poppins', sans-serif;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    --box-shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* === GLOBAL STYLES === */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family); /* Đảm bảo font Poppins là mặc định cho body */
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 30px 15px;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.main-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.main-header h1 {
+    font-size: 2.8em;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    /* Không cần định nghĩa font-family ở đây vì nó kế thừa từ body */
+}
+
+.main-header p {
+    font-size: 1.1em;
+    color: var(--text-color-light);
+    max-width: 600px;
+    margin: 0 auto;
+    /* Không cần định nghĩa font-family ở đây vì nó kế thừa từ body */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    font-weight: 600;
+    /* Không cần định nghĩa font-family ở đây vì chúng kế thừa từ body */
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* === CARD COMPONENT === */
+.card {
+    background-color: var(--card-background-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 30px;
+    overflow: hidden; /* Important for child border-radius */
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: var(--box-shadow-hover);
+}
+
+.card-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1.25em;
+    color: var(--primary-color);
+}
+
+.card-content {
+    padding: 25px;
+}
+
+/* === FORM ELEMENTS === */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-family: var(--font-family); /* Đảm bảo font nhất quán */
+    font-size: 1em;
+    background-color: var(--background-color);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.2);
+}
+
+input[type="file"] {
+    border: 2px dashed var(--border-color);
+    padding: 25px;
+    border-radius: 8px;
+    width: 100%;
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+input[type="file"]:hover {
+    border-color: var(--secondary-color);
+    background-color: white;
+}
+
+/* === BUTTONS === */
+.button {
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--font-family); /* Đảm bảo font nhất quán */
+}
+
+.button-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+.button-primary:hover {
+    background-color: #4a637b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.button-secondary {
+    background-color: var(--secondary-color);
+    color: white;
+}
+.button-secondary:hover {
+    background-color: #1dd4b1;
+    transform: translateY(-2px);
+}
+
+/* New: Icon Button Styles */
+.icon-button {
+    background: none;
+    border: 1px solid var(--border-color); /* Added border for better visibility */
+    padding: 8px 12px; /* Adjusted padding */
+    border-radius: 8px; /* Consistent border-radius */
+    font-size: 0.9em; /* Slightly smaller font for compactness */
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; /* Space between icon and text */
+    color: var(--text-color); /* Default text color */
+    font-family: var(--font-family); /* Đảm bảo font nhất quán */
+    text-decoration: none; /* For anchor tags used as buttons */
+}
+
+.icon-button:hover {
+    background-color: var(--background-color);
+    border-color: var(--secondary-color);
+    color: var(--secondary-color); /* Change text color on hover */
+}
+
+.icon-button .material-icons {
+    font-size: 1.2em; /* Icon size relative to button font size */
+    vertical-align: middle;
+}
+
+/* Specific icon button styles */
+.icon-button.apply-button {
+    background-color: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+}
+.icon-button.apply-button:hover {
+    background-color: #1dd4b1;
+    border-color: #1dd4b1;
+    color: white;
+}
+.icon-button.view-profile-button {
+    /* default styles are good */
+}
+.icon-button.download-cv-button {
+    /* default styles are good */
+}
+
+
+/* === DASHBOARD LAYOUT (Recruiter) === */
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+    align-items: flex-start;
+}
+.dashboard-column.large {
+    grid-column: span 1;
+}
+
+/* JOB LIST (Recruiter) */
+.job-list-recruiter {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.job-list-recruiter li {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    background: var(--card-background-color);
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    transition: background-color 0.2s ease;
+}
+.job-list-recruiter li:first-child {
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+}
+.job-list-recruiter li:last-child {
+    border-bottom: none;
+}
+.job-list-recruiter li:hover { 
+    background-color: #f1f5f9; 
+}
+.job-list-recruiter li.active {
+    background-color: var(--secondary-color);
+    color: white;
+    font-weight: 600;
+}
+.job-list-recruiter li.active .delete-job-btn {
+    color: white;
+}
+.job-list-recruiter li .delete-job-btn {
+    background: none;
+    border: none;
+    color: var(--text-color-light); 
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+.job-list-recruiter li .delete-job-btn:hover {
+    color: var(--error-color);
+    background-color: rgba(192, 57, 43, 0.1);
+}
+
+/* APPLICANT TABLE */
+.table-container {
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+    vertical-align: middle;
+    font-family: var(--font-family); /* Đảm bảo font nhất quán cho table cells */
+}
+th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: var(--text-color-light);
+    text-transform: uppercase;
+    font-size: 0.85em;
+    letter-spacing: 0.5px;
+}
+tr:hover {
+    background-color: #f1f5f9;
+}
+select.status-select {
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: white;
+    font-family: var(--font-family); /* Đảm bảo font nhất quán */
+}
+.score-badge {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 600;
+    font-family: var(--font-family); /* Đảm bảo font nhất quán */
+}
+
+/* Action buttons in table - ensure they are on one line */
+.action-buttons {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    align-items: center; /* Vertically align them */
+}
+
+
+/* === PUBLIC JOB LISTINGS === */
+.job-listings-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+.job-card {
+    cursor: pointer;
+}
+.job-card .job-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.job-card .job-card-header h3 {
+    margin: 0;
+}
+.job-card .job-description {
+    display: none;
+    padding: 20px 25px;
+    border-top: 1px solid var(--border-color);
+    white-space: pre-wrap;
+    text-align: left;
+    color: var(--text-color-light);
+}
+.job-card.active .job-description {
+    display: block;
+}
+.job-card.active {
+    border: 1px solid var(--secondary-color);
+}
+
+
+/* === MODAL === */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0; width: 100%; height: 100%;
+    overflow-y: auto; /* Cho phép cuộn toàn bộ modal nếu nội dung vượt quá kích thước */
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.modal-content {
+    background-color: var(--card-background-color);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    font-family: var(--font-family); /* Đảm bảo font nhất quán */
+    max-height: 90vh; /* Giới hạn chiều cao modal đến 90% viewport height */
+    overflow-y: auto; /* Cho phép cuộn nội dung bên trong modal-content nếu cần */
+}
+.modal-content.large {
+    max-width: 900px;
+}
+.close-button {
+    position: absolute;
+    top: 15px; right: 20px;
+    font-size: 2em;
+    font-weight: 300;
+    color: var(--text-color-light);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+.close-button:hover {
+    color: var(--primary-color);
+}
+.modal-content h2 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* AI PROFILE MODAL STYLES */
+.results-section h2 { color: var(--primary-color); text-align: left; margin-bottom: 25px; }
+.results-section .result-box { box-shadow: none; border: 1px solid var(--border-color); padding: 25px; margin-bottom: 20px; } /* Thêm margin-bottom */
+.results-section .result-box:last-child { margin-bottom: 0; } /* Loại bỏ margin-bottom cho box cuối cùng */
+.results-section .result-box h3 { padding-bottom: 10px; border-bottom: 1px solid var(--border-color); color: var(--primary-color); display: flex; align-items: center; gap: 10px; font-size: 1.2em; }
+.results-section .personal-info-box .name { font-size: 1.8em; font-weight: bold; color: var(--primary-color); }
+.results-section .personal-info-box .contact-info { display: flex; flex-wrap: wrap; gap: 15px 30px; margin-top: 15px; font-size: 1em; }
+.results-section .data-card { padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+.results-section .data-card:last-child { border: none; margin: 0; padding: 0; }
+.results-section .data-card-header .title { font-weight: 600; }
+.results-section pre { 
+    background-color: #f8f9fa; 
+    padding: 15px; 
+    border-radius: 8px;
+    white-space: pre-wrap; /* Đảm bảo nội dung xuống dòng */
+    word-wrap: break-word; /* Đảm bảo từ dài cũng xuống dòng */
+    overflow-x: auto; /* Thêm scrollbar ngang nếu có từ quá dài */
+    font-family: 'Consolas', 'Monaco', monospace; /* Font monospace cho code/analysis */
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+.skills-list {
+    display: flex;
+    flex-wrap: wrap; /* Cho phép các thẻ kỹ năng xuống dòng */
+    gap: 8px; /* Khoảng cách giữa các thẻ kỹ năng */
+    margin-top: 10px;
+    line-height: 1.5; /* Khoảng cách dòng cho dễ đọc */
+}
+
+.skill-tag {
+    background-color: var(--background-color); /* Nền nhẹ */
+    border: 1px solid var(--border-color); /* Viền nhẹ */
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    color: var(--text-color);
+    white-space: nowrap; /* Ngăn không cho từ bị ngắt giữa chừng */
+}

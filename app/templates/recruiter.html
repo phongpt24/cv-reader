@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Quản Lý Tuyển Dụng</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <h1>Bảng điều khiển Nhà Tuyển Dụng</h1>
+            <p>Quản lý tin tuyển dụng và ứng viên một cách hiệu quả.</p>
+        </header>
+
+        <div class="dashboard-layout">
+            <div class="dashboard-column">
+                <button id="showCreateJobFormBtn" class="button button-primary" style="margin-bottom: 20px;">
+                    <i class="material-icons">add</i> Tạo Tin Tuyển Dụng Mới
+                </button>
+
+                <div id="createJobCard" class="card hidden"> <h3 class="card-header">Tạo Tin Tuyển Dụng Mới</h3>
+                    <form id="createJobForm" class="card-content">
+                        <div class="input-group">
+                            <label for="jobTitle">Tiêu đề công việc</label>
+                            <input type="text" id="jobTitle" required placeholder="VD: Lập trình viên Python">
+                        </div>
+                        <div class="input-group">
+                            <label for="jobDescription">Mô tả công việc (JD)</label>
+                            <textarea id="jobDescription" rows="10" required placeholder="Nhập chi tiết mô tả công việc, yêu cầu, quyền lợi..."></textarea>
+                        </div>
+                        <button type="submit" class="button button-primary">
+                            <i class="material-icons">add_circle</i> Tạo Tin Mới
+                        </button>
+                    </form>
+                </div>
+                <div class="card">
+                    <h3 class="card-header">Danh Sách Tin Tuyển Dụng</h3>
+                    <div class="card-content">
+                        <ul id="recruiterJobList" class="job-list-recruiter"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-column large">
+                <div id="applicantSection" class="card hidden">
+                    <h3 id="applicantListTitle" class="card-header">Danh sách ứng viên</h3>
+                    <div class="card-content">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Tên Ứng Viên</th>
+                                        <th>Điểm Phù Hợp</th>
+                                        <th>Trạng Thái</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="applicantTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="aiProfileModal" class="modal hidden">
+        <div class="modal-content large">
+            <span class="close-button profile-close">&times;</span>
+            <div id="structuredResults" class="results-section">
+                 </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='recruiter.js') }}"></script>
+</body>
+</html>
