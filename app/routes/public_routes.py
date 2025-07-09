@@ -77,6 +77,7 @@ def apply_for_job_endpoint(job_id):
         database.add_candidate(
             job_id=job_id,
             full_name=personal_info.get('full_name', 'Chưa rõ'),
+            age=personal_info.get('age'),
             email=personal_info.get('email'),
             phone=personal_info.get('phone_number'),
             cv_filename=filename, 

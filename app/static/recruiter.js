@@ -254,6 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="result-box personal-info-box">
                 <h3><span class="material-icons">person</span> Thông tin cá nhân</h3>
                 <p class="name">${personal_info?.full_name || 'Chưa rõ tên'}</p>
+                ${personal_info?.age ? `<p><span class="material-icons">calendar_today</span> Tuổi: ${personal_info.age}</p>` : ''}
                 <div class="contact-info">
                     ${personal_info?.email ? `<p><span class="material-icons">email</span> ${personal_info.email}</p>` : ''}
                     ${personal_info?.phone_number ? `<p><span class="material-icons">phone</span> ${personal_info.phone_number}</p>` : ''}

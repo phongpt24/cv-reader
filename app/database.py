@@ -99,19 +99,19 @@ def delete_job_posting(job_id):
 
 # === HÀM QUẢN LÝ ỨNG VIÊN (Candidates) ===
 
-def add_candidate(job_id, full_name, email, phone, cv_filename, match_score, structured_data, analysis_result, references_data):
+def add_candidate(job_id, full_name, age, email, phone, cv_filename, match_score, structured_data, analysis_result, references_data):
     """Thêm một ứng viên mới đã được phân tích."""
     conn = get_db_connection()
     cursor = conn.cursor()
     query = """
     INSERT INTO candidates 
-    (job_posting_id, full_name, email, phone_number, cv_file_path, match_score, structured_data_json, analysis_result_text, references_json) 
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    (job_posting_id, full_name, age, email, phone_number, cv_file_path, match_score, structured_data_json, analysis_result_text, references_json) 
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     structured_data_str = json.dumps(structured_data, ensure_ascii=False) if structured_data else None
     references_data_str = json.dumps(references_data, ensure_ascii=False) if references_data else None # NEW LINE
-    
-    cursor.execute(query, (job_id, full_name, email, phone, cv_filename, match_score, structured_data_str, analysis_result, references_data_str)) # UPDATED LINE
+
+    cursor.execute(query, (job_id, full_name, age, email, phone, cv_filename, match_score, structured_data_str, analysis_result, references_data_str)) # UPDATED LINE
     conn.commit()
     candidate_id = cursor.lastrowid
     cursor.close()
@@ -122,7 +122,7 @@ def get_candidates_for_job(job_id):
     """Lấy danh sách ứng viên cho một tin tuyển dụng."""
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    query = "SELECT id, full_name, email, status, match_score, cv_file_path FROM candidates WHERE job_posting_id = %s ORDER BY match_score DESC"
+    query = "SELECT id, full_name, age, email, status, match_score, cv_file_path FROM candidates WHERE job_posting_id = %s ORDER BY match_score DESC"
     cursor.execute(query, (job_id,))
     candidates = cursor.fetchall()
     cursor.close()

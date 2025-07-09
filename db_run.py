@@ -47,6 +47,7 @@ def create_tables():
             id INT AUTO_INCREMENT PRIMARY KEY,
             job_posting_id INT NOT NULL, -- Khóa ngoại liên kết với tin tuyển dụng
             full_name VARCHAR(255) NOT NULL,
+            age VARCHAR(10),
             email VARCHAR(255),
             phone_number VARCHAR(50),
             status ENUM('Mới', 'Đã xem', 'Phù hợp', 'Không phù hợp', 'Phỏng vấn') DEFAULT 'Mới',

@@ -91,7 +91,7 @@ def get_structured_data_from_cv(cv_text: str) -> dict:
 
     CẤU TRÚC JSON CẦN TRẢ VỀ:
     {{
-      "personal_info": {{ "full_name": "string", "email": "string", "phone_number": "string", "address": "string", "linkedin_url": "string | null", "portfolio_url": "string | null" }},
+      "personal_info": {{ "full_name": "string", "age": "string", "email": "string", "phone_number": "string", "address": "string", "linkedin_url": "string | null", "portfolio_url": "string | null" }},
       "summary": "string | null",
       "work_experience": [ {{ "company_name": "string", "position": "string", "start_date": "string", "end_date": "string | 'Present'", "responsibilities": ["string"] }} ],
       "education": [
