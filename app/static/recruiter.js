@@ -7,13 +7,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const applicantTableBody = document.getElementById('applicantTableBody');
     const aiProfileModal = document.getElementById('aiProfileModal');
     const closeProfileModalBtn = aiProfileModal.querySelector('.profile-close');
-    
-    // New elements for showing/hiding the form
+
+    // New filter elements
+    const scoreFilterInput = document.getElementById('scoreFilter');
+    const applyScoreFilterBtn = document.getElementById('applyScoreFilterBtn');
+
+    const cvCountFilterInput = document.getElementById('cvCountFilter');
+    const applyCvCountFilterBtn = document.getElementById('applyCvCountFilterBtn');
+
+    const cvCountDisplay = document.getElementById('cvCountDisplay');
+
+
     const showCreateJobFormBtn = document.getElementById('showCreateJobFormBtn');
     const createJobCard = document.getElementById('createJobCard');
 
     const API_BASE_URL = 'http://localhost:5000';
     let currentJobFolder = null;
+    let currentCandidates = []; // NEW: lưu danh sách ứng viên hiện tại
+    const statuses = ['Mới', 'Đã xem', 'Phù hợp', 'Không phù hợp', 'Phỏng vấn'];
 
     // === FUNCTIONS FOR JOB MANAGEMENT ===
     const fetchAndRenderRecruiterJobs = async () => {
@@ -36,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Event listener for the new button
     showCreateJobFormBtn.addEventListener('click', () => {
         createJobCard.classList.toggle('hidden');
     });
@@ -45,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const title = document.getElementById('jobTitle').value;
         const jd = document.getElementById('jobDescription').value;
-        
+
         try {
             const response = await fetch(`${API_BASE_URL}/recruiter/jobs`, {
                 method: 'POST',
@@ -56,8 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(result.error);
             alert(result.message);
             createJobForm.reset();
-            createJobCard.classList.add('hidden'); // Hide the form after submission
-            fetchAndRenderRecruiterJobs(); // Refresh the list
+            createJobCard.classList.add('hidden');
+            fetchAndRenderRecruiterJobs();
         } catch (error) {
             alert(`Lỗi: ${error.message}`);
         }
@@ -65,20 +75,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     recruiterJobList.addEventListener('click', async (event) => {
         const target = event.target;
-        if (target.tagName === 'SPAN' && target.closest('li')) { // Click vào tên job để xem ứng viên
+        if (target.tagName === 'SPAN' && target.closest('li')) {
             const li = target.closest('li');
             const jobId = li.dataset.jobId;
             const jobTitle = li.dataset.jobTitle;
-            
-            // Highlight selected job
+
             document.querySelectorAll('#recruiterJobList li').forEach(liItem => liItem.classList.remove('active'));
             li.classList.add('active');
 
             fetchAndRenderApplicants(jobId, jobTitle);
-        } else if (target.classList.contains('delete-job-btn')) { // Click vào nút xóa
+        } else if (target.classList.contains('delete-job-btn')) {
             const jobId = target.dataset.jobId;
-            const jobTitle = target.closest('li').querySelector('span').textContent; // Lấy tiêu đề job
-            if (confirm(`Bạn có chắc chắn muốn xóa tin tuyển dụng "${jobTitle}" và tất cả ứng viên liên quan không? Hành động này không thể hoàn tác.`)) {
+            const jobTitle = target.closest('li').querySelector('span').textContent;
+            if (confirm(`Bạn có chắc chắn muốn xóa tin tuyển dụng "${jobTitle}"?`)) {
                 await deleteJobPosting(jobId);
             }
         }
@@ -86,17 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const deleteJobPosting = async (jobId) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/recruiter/jobs/${jobId}`, {
-                method: 'DELETE'
-            });
+            const response = await fetch(`${API_BASE_URL}/recruiter/jobs/${jobId}`, { method: 'DELETE' });
             const result = await response.json();
             if (!response.ok) throw new Error(result.error);
             alert(result.message);
-            fetchAndRenderRecruiterJobs(); // Tải lại danh sách job
-            applicantSection.classList.add('hidden'); // Ẩn danh sách ứng viên nếu job bị xóa
+            fetchAndRenderRecruiterJobs();
+            applicantSection.classList.add('hidden');
         } catch (error) {
             alert(`Lỗi khi xóa tin tuyển dụng: ${error.message}`);
-            console.error("Lỗi khi xóa tin tuyển dụng:", error);
+            console.error(error);
         }
     };
 
@@ -107,48 +114,77 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`${API_BASE_URL}/recruiter/jobs/${jobId}/candidates`);
             const data = await response.json();
             if (!response.ok) throw new Error(data.error);
-            
-            currentJobFolder = data.job_folder; // Lưu lại folder
-            const candidates = data.candidates;
-            const statuses = ['Mới', 'Đã xem', 'Phù hợp', 'Không phù hợp', 'Phỏng vấn'];
 
-            applicantTableBody.innerHTML = '';
-            if (candidates.length === 0) {
-                applicantTableBody.innerHTML = '<tr><td colspan="4">Chưa có ứng viên nào.</td></tr>';
-            } else {
-                candidates.forEach(candidate => {
-                    const tr = document.createElement('tr');
-                    
-                    const statusOptions = statuses.map(status => 
-                        `<option value="${status}" ${candidate.status === status ? 'selected' : ''}>${status}</option>`
-                    ).join('');
+            currentJobFolder = data.job_folder;
+            currentCandidates = data.candidates; // Lưu lại danh sách ứng viên
 
-                    tr.innerHTML = `
-                        <td>${candidate.full_name}</td>
-                        <td><span class="score-badge">${candidate.match_score}%</span></td>
-                        <td>
-                            <select class="status-select" data-candidate-id="${candidate.id}">
-                                ${statusOptions}
-                            </select>
-                        </td>
-                        <td class="action-buttons">
-                            <button class="icon-button view-profile-button" data-candidate-id="${candidate.id}">
-                                <span class="material-icons">visibility</span> Xem hồ sơ
-                            </button>
-                            <a href="${API_BASE_URL}/public/download_cv/${currentJobFolder}/${candidate.cv_file_path}" target="_blank" class="icon-button download-cv-button">
-                                <span class="material-icons">download</span> Tải CV
-                            </a>
-                        </td>
-                    `;
-                    applicantTableBody.appendChild(tr);
-                });
-            }
+            renderApplicantsTable(currentCandidates);
             applicantSection.classList.remove('hidden');
         } catch (error) {
             console.error("Lỗi khi tải ứng viên:", error);
             applicantSection.classList.add('hidden');
         }
     };
+
+    // NEW: render table function
+    const renderApplicantsTable = (candidates) => {
+        applicantTableBody.innerHTML = '';
+        cvCountDisplay.textContent = `Tổng số CV: ${candidates.length}`;
+
+        if (candidates.length === 0) {
+            applicantTableBody.innerHTML = '<tr><td colspan="5">Không có ứng viên nào phù hợp.</td></tr>';
+        } else {
+            candidates.forEach(candidate => {
+                const tr = document.createElement('tr');
+                const statusOptions = statuses.map(status =>
+                    `<option value="${status}" ${candidate.status === status ? 'selected' : ''}>${status}</option>`
+                ).join('');
+
+                tr.innerHTML = `
+                    <td>${candidate.full_name}</td>
+                    <td><span class="score-badge">${candidate.match_score}%</span></td>
+                    <td>${candidate.submission_date || ''}</td>
+                    <td>
+                        <select class="status-select" data-candidate-id="${candidate.id}">
+                            ${statusOptions}
+                        </select>
+                    </td>
+                    <td class="action-buttons">
+                        <button class="icon-button view-profile-button" data-candidate-id="${candidate.id}">
+                            <span class="material-icons">visibility</span> Xem hồ sơ
+                        </button>
+                        <a href="${API_BASE_URL}/public/download_cv/${currentJobFolder}/${candidate.cv_file_path}" target="_blank" class="icon-button download-cv-button">
+                            <span class="material-icons">download</span> Tải CV
+                        </a>
+                    </td>
+                `;
+                applicantTableBody.appendChild(tr);
+            });
+        }
+    };
+
+    // === FILTER SCORE ===
+    applyScoreFilterBtn.addEventListener('click', () => {
+        const minScore = parseInt(scoreFilterInput.value);
+        if (isNaN(minScore)) {
+            renderApplicantsTable(currentCandidates);
+            return;
+        }
+        const filtered = currentCandidates.filter(c => c.match_score >= minScore);
+        renderApplicantsTable(filtered);
+    });
+
+    applyCvCountFilterBtn.addEventListener('click', () => {
+    const count = parseInt(cvCountFilterInput.value);
+    if (isNaN(count) || count <= 0) {
+        // Nếu không nhập hoặc nhập <=0 thì hiển thị tất cả
+        renderApplicantsTable(currentCandidates);
+    } else {
+        // Hiển thị N CV đầu tiên
+        const limited = currentCandidates.slice(0, count);
+        renderApplicantsTable(limited);
+    }
+    });
 
     const updateCandidateStatus = async (candidateId, newStatus, selectElement) => {
         try {
@@ -159,39 +195,28 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const result = await response.json();
             if (!response.ok) throw new Error(result.error);
-            
-            selectElement.style.border = '2px solid #28a745';
-            setTimeout(() => {
-                selectElement.style.border = '';
-            }, 2000);
 
+            selectElement.style.border = '2px solid #28a745';
+            setTimeout(() => { selectElement.style.border = ''; }, 2000);
         } catch (error) {
             alert(`Lỗi khi cập nhật trạng thái: ${error.message}`);
             selectElement.style.border = '2px solid #dc3545';
-             setTimeout(() => {
-                selectElement.style.border = ''; 
-            }, 2000);
+            setTimeout(() => { selectElement.style.border = ''; }, 2000);
         }
     };
-    
+
     applicantTableBody.addEventListener('click', event => {
-        const target = event.target;
-        // Check if the clicked element or its parent is a .view-profile-button
-        const viewProfileButton = target.closest('.view-profile-button');
-        if(viewProfileButton) {
-            const candidateId = viewProfileButton.dataset.candidateId;
-            openAiProfileModal(candidateId);
-        }
+        const target = event.target.closest('.view-profile-button');
+        if (target) openAiProfileModal(target.dataset.candidateId);
     });
 
     applicantTableBody.addEventListener('change', event => {
         const target = event.target;
         if (target.classList.contains('status-select')) {
-            const candidateId = target.dataset.candidateId;
-            const newStatus = target.value;
-            updateCandidateStatus(candidateId, newStatus, target);
+            updateCandidateStatus(target.dataset.candidateId, target.value, target);
         }
     });
+
     
     // === AI PROFILE MODAL LOGIC ===
     const openAiProfileModal = async (candidateId) => {

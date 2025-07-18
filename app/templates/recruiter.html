@@ -54,11 +54,25 @@
                     <h3 id="applicantListTitle" class="card-header">Danh sách ứng viên</h3>
                     <div class="card-content">
                         <div class="table-container">
+                            <div class="filter-container">
+                                <label for="scoreFilter">Lọc điểm phù hợp từ:</label>
+                                <input type="number" id="scoreFilter" min="0" max="100" placeholder="VD: 80">
+                                <button id="applyScoreFilterBtn" class="button button-secondary">Lọc</button>
+                            </div>
+                            <div class="filter-container">
+                                <label for="cvCountFilter">Số lượng CV cần hiển thị:</label>
+                                <input type="number" id="cvCountFilter" min="0" placeholder="VD: 5">
+                                <button id="applyCvCountFilterBtn" class="button button-secondary">Lọc số lượng</button>
+                            </div>
+                            <div id="cvCountDisplay" style="margin-bottom: 10px; font-weight: bold;">
+                                Tổng số CV: 0
+                            </div>
                             <table>
                                 <thead>
                                     <tr>
                                         <th>Tên Ứng Viên</th>
                                         <th>Điểm Phù Hợp</th>
+                                        <th>Ngày Nộp CV</th>
                                         <th>Trạng Thái</th>
                                         <th>Thao tác</th>
                                     </tr>

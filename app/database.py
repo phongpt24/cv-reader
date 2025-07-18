@@ -1,6 +1,7 @@
 # database.py
 import mysql.connector
 import json
+from datetime import datetime, date
 
 # --- THÔNG TIN KẾT NỐI CSDL ---
 DB_CONFIG = {
@@ -105,26 +106,41 @@ def add_candidate(job_id, full_name, age, email, phone, cv_filename, match_score
     cursor = conn.cursor()
     query = """
     INSERT INTO candidates 
-    (job_posting_id, full_name, age, email, phone_number, cv_file_path, match_score, structured_data_json, analysis_result_text, references_json) 
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    (job_posting_id, full_name, age, email, phone_number, cv_file_path, match_score, structured_data_json, analysis_result_text, references_json, submission_date) 
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     structured_data_str = json.dumps(structured_data, ensure_ascii=False) if structured_data else None
     references_data_str = json.dumps(references_data, ensure_ascii=False) if references_data else None # NEW LINE
 
-    cursor.execute(query, (job_id, full_name, age, email, phone, cv_filename, match_score, structured_data_str, analysis_result, references_data_str)) # UPDATED LINE
+    submission_date = datetime.now().strftime("%Y-%m-%d")  # Lưu ở dạng yyyy-mm-dd
+
+    cursor.execute(query, (job_id, full_name, age, email, phone, cv_filename, match_score, structured_data_str, analysis_result, references_data_str, submission_date)) # UPDATED LINE
     conn.commit()
     candidate_id = cursor.lastrowid
     cursor.close()
     conn.close()
     return candidate_id
 
-def get_candidates_for_job(job_id):
+def   get_candidates_for_job(job_id):
     """Lấy danh sách ứng viên cho một tin tuyển dụng."""
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    query = "SELECT id, full_name, age, email, status, match_score, cv_file_path FROM candidates WHERE job_posting_id = %s ORDER BY match_score DESC"
+    query = "SELECT id, full_name, age, email, status, match_score, submission_date, cv_file_path FROM candidates WHERE job_posting_id = %s ORDER BY match_score DESC"
     cursor.execute(query, (job_id,))
     candidates = cursor.fetchall()
+
+    for candidate in candidates:
+        if candidate['submission_date']:
+            # Nếu submission_date là datetime object
+            if isinstance(candidate['submission_date'], (datetime, date)):
+                candidate['submission_date'] = candidate['submission_date'].strftime('%d/%m/%Y')
+            else:
+                # Nếu là string ISO
+                from dateutil.parser import parse
+                candidate['submission_date'] = parse(candidate['submission_date']).strftime('%d/%m/%Y')
+    
+
+    
     cursor.close()
     conn.close()
     return candidates
